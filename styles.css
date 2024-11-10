@@ -1,0 +1,30 @@
+body {
+    background-color: green;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+}
+
+.timer {
+    background-color: white;
+    color: black;
+    font-size: 48px;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 200px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}

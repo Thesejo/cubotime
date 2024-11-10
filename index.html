@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronómetro de Voz</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #startButton {
+            padding: 20px 40px;
+            font-size: 24px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #startButton:hover {
+            background-color: darkgreen;
+        }
+        #output {
+            font-size: 48px;
+            color: white;
+            background-color: black;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        #countdown {
+            font-size: 32px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cronómetro de Voz</h1>
+    <button id="startButton">Iniciar</button>
+    <div id="output">Tiempo: 0.000 segundos</div>
+    <div id="countdown">Esperando: 5 segundos</div>
+
+    <script>
+        let timer;
+        let startTime;
+        let elapsedTime = 0;
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        
+        // Configurar el reconocimiento de voz
+        recognition.lang = 'es-ES';
+        recognition.interimResults = false;
+        recognition.onresult = (event) => {
+            const result = event.results[0][0].transcript;
+            if (result === 'para') {
+                stopTimer();
+            }
+        };
+
+        // Función para iniciar el cronómetro
+        function startTimer() {
+            startTime = Date.now();
+            timer = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                document.getElementById("output").innerText = `Tiempo: ${(elapsedTime / 1000).toFixed(3)} segundos`;
+            }, 1);
+            recognition.start(); // Inicia el reconocimiento de voz
+        }
+
+        // Función para detener el cronómetro
+        function stopTimer() {
+            clearInterval(timer);
+            recognition.stop(); // Detiene el reconocimiento de voz
+            alert(`Cronómetro detenido en: ${(elapsedTime / 1000).toFixed(3)} segundos`);
+        }
+
+        // Iniciar el conteo regresivo y luego el cronómetro
+        document.getElementById("startButton").onclick = () => {
+            let countdown = 5;
+            document.getElementById("countdown").innerText = `Esperando: ${countdown} segundos`;
+            const countdownInterval = setInterval(() => {
+                if (countdown > 1) {
+                    countdown--;
+                    document.getElementById("countdown").innerText = `Esperando: ${countdown} segundos`;
+                } else {
+                    clearInterval(countdownInterval);
+                    // Hablar "go"
+                    const speech = new SpeechSynthesisUtterance('Go');
+                    window.speechSynthesis.speak(speech);
+                    // Iniciar el cronómetro
+                    startTimer();
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
